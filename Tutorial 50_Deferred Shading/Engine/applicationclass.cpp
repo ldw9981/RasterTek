@@ -273,7 +273,7 @@ bool ApplicationClass::Frame()
 bool ApplicationClass::Render()
 {
 	bool result;
-	D3DXMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
+	XMMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
 
 
 	// Render the scene to the render buffers.
@@ -314,7 +314,7 @@ bool ApplicationClass::Render()
 
 bool ApplicationClass::RenderSceneToTexture()
 {
-	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 
 
 	// Set the render buffers to be the render target.
@@ -330,14 +330,14 @@ bool ApplicationClass::RenderSceneToTexture()
 
 	// Update the rotation variable each frame.
 	static float rotation = 0.0f;
-	rotation += (float)D3DX_PI * 0.01f;
+	rotation += (float)XM_PI * 0.01f;
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
 	}
 
 	// Rotate the world matrix by the rotation value so that the cube will spin.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	worldMatrix = XMMatrixRotationY(rotation);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());

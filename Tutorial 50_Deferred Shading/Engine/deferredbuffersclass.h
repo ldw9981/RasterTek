@@ -15,7 +15,8 @@ const int BUFFER_COUNT = 2;
 // INCLUDES //
 //////////////
 #include <d3d11.h>
-#include <d3dx10math.h>
+#include <DirectXMath.h>
+using namespace DirectX;
 
 
 ////////////////////////////////////////////////////////////////////////////////

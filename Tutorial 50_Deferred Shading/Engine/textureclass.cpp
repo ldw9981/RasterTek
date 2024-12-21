@@ -23,10 +23,12 @@ TextureClass::~TextureClass()
 bool TextureClass::Initialize(ID3D11Device* device, WCHAR* filename)
 {
 	HRESULT result;
+	
+	DirectX::TexMetadata metadata1;
+	DirectX::ScratchImage scratchImage;
 
-
-	// Load the texture in.
-	result = D3DX11CreateShaderResourceViewFromFile(device, filename, NULL, NULL, &m_texture, NULL);
+	// Load the texture in.	
+	result = DirectX::CreateShaderResourceView(device, scratchImage.GetImages(), scratchImage.GetImageCount(), metadata1, &m_texture);
 	if(FAILED(result))
 	{
 		return false;
