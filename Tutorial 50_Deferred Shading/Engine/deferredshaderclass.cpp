@@ -108,7 +108,7 @@ bool DeferredShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHA
 	}
 
     // Compile the pixel shader code.
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "DeferredPixelShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer,
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "DeferredPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer,
 		&errorMessage);
 
 	if(FAILED(result))

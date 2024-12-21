@@ -95,6 +95,9 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 
 	// Initialize the model object.
 	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+
+	WCHAR buffer[256];
+	::GetCurrentDirectory(256,buffer);
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -330,7 +333,7 @@ bool ApplicationClass::RenderSceneToTexture()
 
 	// Update the rotation variable each frame.
 	static float rotation = 0.0f;
-	rotation += (float)XM_PI * 0.01f;
+	rotation += (float)XM_PI * 0.001f;
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
