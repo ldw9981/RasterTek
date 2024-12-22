@@ -103,9 +103,11 @@ bool OrthoWindowClass::InitializeBuffers(ID3D11Device* device, int windowWidth, 
 	{
 		return false;
 	}
-
+		
 	// Load the vertex array with data.
-	// First triangle.
+	// First triangle. 
+	// 0
+	// 2 1
 	vertices[0].position = XMFLOAT3(left, top, 0.0f);  // Top left.
 	vertices[0].texture = XMFLOAT2(0.0f, 0.0f);
 
@@ -116,6 +118,8 @@ bool OrthoWindowClass::InitializeBuffers(ID3D11Device* device, int windowWidth, 
 	vertices[2].texture = XMFLOAT2(0.0f, 1.0f);
 
 	// Second triangle.
+	//  3 4
+	//    5
 	vertices[3].position = XMFLOAT3(left, top, 0.0f);  // Top left.
 	vertices[3].texture = XMFLOAT2(0.0f, 0.0f);
 
