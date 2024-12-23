@@ -63,7 +63,6 @@ void CameraClass::Render()
 	float yaw, pitch, roll;
 	XMMATRIX rotationMatrix;
 
-
 	// Setup the vector that points upwards.
 	up.x = 0.0f;
 	up.y = 1.0f;
