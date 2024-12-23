@@ -21,21 +21,21 @@ LightClass::~LightClass()
 
 void LightClass::SetAmbientColor(float red, float green, float blue, float alpha)
 {
-	m_ambientColor = D3DXVECTOR4(red, green, blue, alpha);
+	m_ambientColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
 
 void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
 {
-	m_diffuseColor = D3DXVECTOR4(red, green, blue, alpha);
+	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
 
 void LightClass::SetPosition(float x, float y, float z)
 {
-	m_position = D3DXVECTOR3(x, y, z);
+	m_position = XMFLOAT3(x, y, z);
 	return;
 }
 
@@ -49,19 +49,19 @@ void LightClass::SetLookAt(float x, float y, float z)
 }
 
 
-D3DXVECTOR4 LightClass::GetAmbientColor()
+XMFLOAT4 LightClass::GetAmbientColor()
 {
 	return m_ambientColor;
 }
 
 
-D3DXVECTOR4 LightClass::GetDiffuseColor()
+XMFLOAT4 LightClass::GetDiffuseColor()
 {
 	return m_diffuseColor;
 }
 
 
-D3DXVECTOR3 LightClass::GetPosition()
+XMFLOAT3 LightClass::GetPosition()
 {
 	return m_position;
 }
@@ -69,16 +69,18 @@ D3DXVECTOR3 LightClass::GetPosition()
 
 void LightClass::GenerateViewMatrix()
 {
-	D3DXVECTOR3 up;
-
+	XMFLOAT3 up;
+	XMVECTOR vecUp, vecPosition, vecLookAt;
 
 	// Setup the vector that points upwards.
 	up.x = 0.0f;
 	up.y = 1.0f;
 	up.z = 0.0f;
-
+	vecUp = XMLoadFloat3(&up);
+	vecPosition = XMLoadFloat3(&m_position);
+	vecLookAt = XMLoadFloat3(&m_lookAt);
 	// Create the view matrix from the three vectors.
-	D3DXMatrixLookAtLH(&m_viewMatrix, &m_position, &m_lookAt, &up);
+	m_viewMatrix = XMMatrixLookAtLH(vecPosition, vecLookAt, vecUp);
 	
 	return;
 }
@@ -90,24 +92,24 @@ void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
 
 
 	// Setup field of view and screen aspect for a square light source.
-	fieldOfView = (float)D3DX_PI / 2.0f;
+	fieldOfView = (float)XM_PI / 2.0f;
 	screenAspect = 1.0f;
 
 	// Create the projection matrix for the light.
-	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
 
 	return;
 }
 
 
-void LightClass::GetViewMatrix(D3DXMATRIX& viewMatrix)
+void LightClass::GetViewMatrix(XMMATRIX& viewMatrix)
 {
 	viewMatrix = m_viewMatrix;
 	return;
 }
 
 
-void LightClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
+void LightClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 {
 	projectionMatrix = m_projectionMatrix;
 	return;

@@ -2,7 +2,8 @@
 // Filename: shadowshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "shadowshaderclass.h"
-
+#include <d3dcompiler.h>
+#pragma comment(lib, "d3dcompiler.lib")
 
 ShadowShaderClass::ShadowShaderClass()
 {
@@ -52,11 +53,11 @@ void ShadowShaderClass::Shutdown()
 }
 
 
-bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-							   D3DXMATRIX projectionMatrix, D3DXMATRIX lightViewMatrix, D3DXMATRIX lightProjectionMatrix, 
-							   ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, D3DXVECTOR3 lightPosition, 
-							   D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXMATRIX lightViewMatrix2, D3DXMATRIX lightProjectionMatrix2, 
-							   ID3D11ShaderResourceView* depthMapTexture2, D3DXVECTOR3 lightPosition2, D3DXVECTOR4 diffuseColor2)
+bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
+							   XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix, 
+							   ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition, 
+							   XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMMATRIX lightViewMatrix2, XMMATRIX lightProjectionMatrix2, 
+							   ID3D11ShaderResourceView* depthMapTexture2, XMFLOAT3 lightPosition2, XMFLOAT4 diffuseColor2)
 {
 	bool result;
 
@@ -97,8 +98,9 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR*
 	pixelShaderBuffer = 0;
 
     // Compile the vertex shader code.
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "ShadowVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
-								   &vertexShaderBuffer, &errorMessage, NULL);
+	result = D3DCompileFromFile(vsFilename, NULL, NULL, "ShadowVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexShaderBuffer,
+		&errorMessage);
+
 	if(FAILED(result))
 	{
 		// If the shader failed to compile it should have writen something to the error message.
@@ -116,8 +118,9 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR*
 	}
 
     // Compile the pixel shader code.
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "ShadowPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
-								   &pixelShaderBuffer, &errorMessage, NULL);
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "ShadowPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer,
+		&errorMessage);
+
 	if(FAILED(result))
 	{
 		// If the shader failed to compile it should have writen something to the error message.
@@ -370,12 +373,12 @@ void ShadowShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND 
 }
 
 
-bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-											D3DXMATRIX projectionMatrix, D3DXMATRIX lightViewMatrix, D3DXMATRIX lightProjectionMatrix, 
-											ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, D3DXVECTOR3 lightPosition,
-											D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor, D3DXMATRIX lightViewMatrix2, 
-											D3DXMATRIX lightProjectionMatrix2, ID3D11ShaderResourceView* depthMapTexture2, D3DXVECTOR3 lightPosition2, 
-											D3DXVECTOR4 diffuseColor2)
+bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
+											XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix, 
+											ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
+											XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMMATRIX lightViewMatrix2, 
+											XMMATRIX lightProjectionMatrix2, ID3D11ShaderResourceView* depthMapTexture2, XMFLOAT3 lightPosition2, 
+											XMFLOAT4 diffuseColor2)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -386,13 +389,13 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 
 
 	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
-	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
-	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
-	D3DXMatrixTranspose(&lightViewMatrix, &lightViewMatrix);
-	D3DXMatrixTranspose(&lightProjectionMatrix, &lightProjectionMatrix);
-	D3DXMatrixTranspose(&lightViewMatrix2, &lightViewMatrix2);
-	D3DXMatrixTranspose(&lightProjectionMatrix2, &lightProjectionMatrix2);
+	worldMatrix = XMMatrixTranspose(worldMatrix);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	lightViewMatrix = XMMatrixTranspose(lightViewMatrix);
+	lightProjectionMatrix = XMMatrixTranspose(lightProjectionMatrix);
+	lightViewMatrix2 = XMMatrixTranspose(lightViewMatrix2);
+	lightProjectionMatrix2 = XMMatrixTranspose(lightProjectionMatrix2);
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

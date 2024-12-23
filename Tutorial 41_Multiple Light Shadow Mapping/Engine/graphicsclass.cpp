@@ -322,7 +322,7 @@ bool GraphicsClass::Frame(float posX, float posY, float posZ, float rotX, float 
 
 bool GraphicsClass::RenderSceneToTexture()
 {
-	D3DXMATRIX worldMatrix, lightViewMatrix, lightProjectionMatrix, translateMatrix;
+	XMMATRIX worldMatrix, lightViewMatrix, lightProjectionMatrix, translateMatrix;
 	float posX, posY, posZ;
 	bool result;
 
@@ -345,7 +345,7 @@ bool GraphicsClass::RenderSceneToTexture()
 
 	// Setup the translation matrix for the cube model.
 	m_CubeModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the cube model with the depth shader.
 	m_CubeModel->Render(m_D3D->GetDeviceContext());
@@ -360,7 +360,7 @@ bool GraphicsClass::RenderSceneToTexture()
 
 	// Setup the translation matrix for the sphere model.
 	m_SphereModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the sphere model with the depth shader.
 	m_SphereModel->Render(m_D3D->GetDeviceContext());
@@ -375,7 +375,7 @@ bool GraphicsClass::RenderSceneToTexture()
 
 	// Setup the translation matrix for the ground model.
 	m_GroundModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the ground model with the depth shader.
 	m_GroundModel->Render(m_D3D->GetDeviceContext());
@@ -397,7 +397,7 @@ bool GraphicsClass::RenderSceneToTexture()
 
 bool GraphicsClass::RenderSceneToTexture2()
 {
-	D3DXMATRIX worldMatrix, lightViewMatrix, lightProjectionMatrix, translateMatrix;
+	XMMATRIX worldMatrix, lightViewMatrix, lightProjectionMatrix, translateMatrix;
 	float posX, posY, posZ;
 	bool result;
 
@@ -420,7 +420,7 @@ bool GraphicsClass::RenderSceneToTexture2()
 
 	// Setup the translation matrix for the cube model.
 	m_CubeModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the cube model with the depth shader.
 	m_CubeModel->Render(m_D3D->GetDeviceContext());
@@ -435,7 +435,7 @@ bool GraphicsClass::RenderSceneToTexture2()
 
 	// Setup the translation matrix for the sphere model.
 	m_SphereModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the sphere model with the depth shader.
 	m_SphereModel->Render(m_D3D->GetDeviceContext());
@@ -450,7 +450,7 @@ bool GraphicsClass::RenderSceneToTexture2()
 
 	// Setup the translation matrix for the ground model.
 	m_GroundModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the ground model with the depth shader.
 	m_GroundModel->Render(m_D3D->GetDeviceContext());
@@ -472,9 +472,9 @@ bool GraphicsClass::RenderSceneToTexture2()
 
 bool GraphicsClass::Render()
 {
-	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix;
-	D3DXMATRIX lightViewMatrix, lightProjectionMatrix;
-	D3DXMATRIX lightViewMatrix2, lightProjectionMatrix2;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix;
+	XMMATRIX lightViewMatrix, lightProjectionMatrix;
+	XMMATRIX lightViewMatrix2, lightProjectionMatrix2;
 	bool result;
 	float posX, posY, posZ;
 
@@ -520,7 +520,7 @@ bool GraphicsClass::Render()
 
 	// Setup the translation matrix for the cube model.
 	m_CubeModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 	
 	// Put the cube model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_CubeModel->Render(m_D3D->GetDeviceContext());
@@ -540,7 +540,7 @@ bool GraphicsClass::Render()
 
 	// Setup the translation matrix for the sphere model.
 	m_SphereModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_SphereModel->Render(m_D3D->GetDeviceContext());
@@ -558,7 +558,7 @@ bool GraphicsClass::Render()
 
 	// Setup the translation matrix for the ground model.
 	m_GroundModel->GetPosition(posX, posY, posZ);
-	D3DXMatrixTranslation(&worldMatrix, posX, posY, posZ);
+	worldMatrix = XMMatrixTranslation(posX, posY, posZ);
 
 	// Render the ground model using the shadow shader.
 	m_GroundModel->Render(m_D3D->GetDeviceContext());
