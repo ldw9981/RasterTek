@@ -355,14 +355,10 @@ bool ApplicationClass::RenderSceneToTexture()
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Update the rotation variable each frame.
-	static float rotation = 0.0f;
-	/*
-	rotation += (float)XM_PI * 0.001f;
-	if(rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
-	*/
+	static float rotation = 90.0f;
+	
+	
+	
 	// Rotate the world matrix by the rotation value so that the cube will spin.
 	worldMatrix = XMMatrixRotationY(rotation);
 
