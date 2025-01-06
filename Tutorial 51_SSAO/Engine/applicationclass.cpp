@@ -72,7 +72,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	}
 
 	// Set the initial position of the camera and build the matrices needed for rendering.
-	m_Camera->SetPosition(0.0f, 2.0f, -13.0f);
+	m_Camera->SetPosition(0.0f, 1.0f, -5.0f);
 	m_Camera->SetLookAt(0.0f, 0.0f, 1.0f);
 	m_Camera->Render();
 	m_Camera->RenderBaseViewMatrix();

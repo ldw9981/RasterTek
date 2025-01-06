@@ -19,10 +19,17 @@ SamplerState SampleTypePoint : register(s0);
 //////////////////////
 // CONSTANT BUFFERS //
 //////////////////////
-cbuffer LightBuffer
+cbuffer MatrixBuffer : register(b0)
+{
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
+};
+
+cbuffer LightBuffer : register(b1)
 {
     float3 lightDirection;
-	float padding;
+	float padding1;
 };
 
 
@@ -43,11 +50,14 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 {
 	float4 colors;
 	float4 normals;
-	float4 positionSampled;
+	float4 worldPosition;
 	float3 lightDir;
 	float lightIntensity;
 	float4 outputColor;
-	
+	float3 cameraPosition;
+
+	cameraPosition = -viewMatrix[3].xyz;
+	normalize(cameraPosition);
 
 	// Sample the colors from the color render texture using the point sampler at this texture coordinate location.
 	colors = colorTexture.Sample(SampleTypePoint, input.tex);
@@ -55,7 +65,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	// Sample the normals from the normal render texture using the point sampler at this texture coordinate location.
 	normals = normalTexture.Sample(SampleTypePoint, input.tex);
 	
-	positionSampled = positionTexture.Sample(SampleTypePoint, input.tex);
+	worldPosition = positionTexture.Sample(SampleTypePoint, input.tex);
 
 	// Invert the light direction for calculations.
     lightDir = -lightDirection;
