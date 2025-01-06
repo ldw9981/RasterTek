@@ -42,6 +42,40 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
 };
 
+float3 GenerateHemisphereSample(float3 worldPos, float3 normal, float random1, float random2, float random3, float radius)
+{
+    // Create tangent and bitangent vectors to form the TBN matrix
+    float3 tangent = normalize(cross(float3(0.0, 1.0, 0.0), normal));
+    if (length(tangent) < 0.001) // Handle edge case when normal is close to Y axis
+    {
+        tangent = normalize(cross(float3(1.0, 0.0, 0.0), normal));
+    }
+    float3 bitangent = normalize(cross(normal, tangent));
+    
+    // TBN matrix
+    float3x3 TBN = float3x3(tangent, bitangent, normal);
+    
+    // Generate random point in hemisphere
+    float theta = random1 * 2.0 * 3.14159265359; // Azimuthal angle [0, 2π]
+    float phi = acos(random2);                  // Polar angle [0, π/2]
+
+    float x = sin(phi) * cos(theta);
+    float y = sin(phi) * sin(theta);
+    float z = cos(phi);
+
+    float3 sampleDir = float3(x, y, z); // Local space direction in hemisphere
+
+    // Apply random scale to sample direction based on radius
+    float sampleDistance = random3 * radius; // Scale the sample within the given radius
+    sampleDir *= sampleDistance;
+
+    // Transform sample direction to world space using TBN matrix
+    float3 worldSampleDir = mul(TBN, sampleDir);
+
+    return worldPos + worldSampleDir; // Return the sample position in world space
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
