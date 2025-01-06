@@ -13,6 +13,11 @@ CameraClass::CameraClass()
 	m_rotationX = 0.0f;
 	m_rotationY = 0.0f;
 	m_rotationZ = 0.0f;
+
+	m_lookAtX = 0.0f;
+	m_lookAtY = 0.0f;
+	m_lookAtZ = 1.0f;
+
 }
 
 
@@ -41,6 +46,13 @@ void CameraClass::SetRotation(float x, float y, float z)
 	m_rotationY = y;
 	m_rotationZ = z;
 	return;
+}
+
+void CameraClass::SetLookAt(float x, float y, float z)
+{
+	m_lookAtX = x;
+	m_lookAtY = y;
+	m_lookAtZ = z;
 }
 
 
@@ -76,9 +88,9 @@ void CameraClass::Render()
 	vecPosition = XMLoadFloat3(&position);
 
 	// Setup where the camera is looking by default.
-	lookAt.x = 0.0f;
-	lookAt.y = 0.0f;
-	lookAt.z = 1.0f;
+	lookAt.x = m_lookAtX;
+	lookAt.y = m_lookAtY;
+	lookAt.z = m_lookAtZ;
 	vecLookAt = XMLoadFloat3(&lookAt);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
@@ -131,9 +143,9 @@ void CameraClass::RenderBaseViewMatrix()
 	vecPosition = XMLoadFloat3(&position);
 
 	// Setup where the camera is looking by default.
-	lookAt.x = 0.0f;
-	lookAt.y = 0.0f;
-	lookAt.z = 1.0f;
+	lookAt.x = m_lookAtX;
+	lookAt.y = m_lookAtY;
+	lookAt.z = m_lookAtZ;
 	vecLookAt = XMLoadFloat3(&lookAt);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.

@@ -11,6 +11,7 @@ ApplicationClass::ApplicationClass()
 	m_Camera = 0;
 	m_Light = 0;
 	m_Model = 0;
+	m_ModelFloor = 0;
 	m_FullScreenWindow = 0;
 	m_DeferredBuffers = 0;
 	m_DeferredShader = 0;
@@ -71,7 +72,8 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	}
 
 	// Set the initial position of the camera and build the matrices needed for rendering.
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 2.0f, -13.0f);
+	m_Camera->SetLookAt(0.0f, 0.0f, 1.0f);
 	m_Camera->Render();
 	m_Camera->RenderBaseViewMatrix();
 
@@ -84,7 +86,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 
 	// Initialize the light object.
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(0.0f, -1.0f, 1.0f);
 	
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -99,6 +101,20 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	WCHAR buffer[256];
 	::GetCurrentDirectory(256,buffer);
 	if(!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_ModelFloor = new ModelClass;
+	if (!m_ModelFloor)
+	{
+		return false;
+	}
+
+	// Initialize the model object.
+	result = m_ModelFloor->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");	
+	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
@@ -208,6 +224,13 @@ void ApplicationClass::Shutdown()
 		m_Model->Shutdown();
 		delete m_Model;
 		m_Model = 0;
+	}
+
+	if (m_ModelFloor)
+	{
+		m_ModelFloor->Shutdown();
+		delete m_ModelFloor;
+		m_ModelFloor = 0;
 	}
 
 	// Release the light object.
@@ -333,12 +356,13 @@ bool ApplicationClass::RenderSceneToTexture()
 
 	// Update the rotation variable each frame.
 	static float rotation = 0.0f;
+	/*
 	rotation += (float)XM_PI * 0.001f;
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
 	}
-
+	*/
 	// Rotate the world matrix by the rotation value so that the cube will spin.
 	worldMatrix = XMMatrixRotationY(rotation);
 
@@ -346,7 +370,13 @@ bool ApplicationClass::RenderSceneToTexture()
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the deferred shader.
-	m_DeferredShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
+	m_DeferredShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
+
+	worldMatrix = XMMatrixScaling(3.0f, 0.1f, 3.0f);
+	m_ModelFloor->Render(m_D3D->GetDeviceContext());
+	m_DeferredShader->Render(m_D3D->GetDeviceContext(), m_ModelFloor->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix, m_ModelFloor->GetTexture());
 
 	// Reset the render target back to the original back buffer and not the render buffers anymore.
 	m_D3D->SetBackBufferRenderTarget();

@@ -52,6 +52,7 @@ private:
 	CameraClass* m_Camera;
 	LightClass* m_Light;
 	ModelClass* m_Model;
+	ModelClass* m_ModelFloor;
 	OrthoWindowClass* m_FullScreenWindow;
 	DeferredBuffersClass* m_DeferredBuffers;
 	DeferredShaderClass* m_DeferredShader;
